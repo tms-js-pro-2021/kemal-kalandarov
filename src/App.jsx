@@ -4,16 +4,13 @@ export default function App() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    console.log("mounted");
-
-    return () => {
-      console.log("unmounting");
-    };
-  }, []);
-
   const handleLoginClick = () => {
+    console.log('login:');
+    console.log(login);
+    console.log('password:');
+    console.log(password);
     setLogin("");
+    setPassword("");
   };
 
   return (
@@ -26,8 +23,17 @@ export default function App() {
       }}
     >
       <div style={{ width: 200, display: "flex", flexDirection: "column" }}>
-        <input style={{ margin: 8 }} />
-        <input style={{ margin: 8 }} />
+        <input
+          value={login}
+          onChange={(e) => setLogin(e.target.value)}
+          style={{ margin: 8 }}
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ margin: 8 }}
+        />
         <button style={{ margin: 8 }} onClick={handleLoginClick}>
           login
         </button>
