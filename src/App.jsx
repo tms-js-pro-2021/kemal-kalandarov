@@ -1,20 +1,29 @@
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
+import { object, string } from "yup";
+import { TextField, Button, Box } from "@material-ui/core";
 
 export default function App() {
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLoginClick = () => {
-    console.log('login:');
-    console.log(login);
-    console.log('password:');
-    console.log(password);
-    setLogin("");
-    setPassword("");
-  };
+  const formik = useFormik({
+    initialValues: {
+      login: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+      formik.resetForm();
+    },
+    validateOnChange: false,
+    validateOnBlur: true,
+    validationSchema: object({
+      login: string().email("имейл не имейл"),
+      password: string().required(),
+    }),
+  });
 
   return (
-    <div
+    <Box
+      m={2}
       style={{
         height: "100vh",
         width: "100vw",
@@ -22,22 +31,34 @@ export default function App() {
         placeItems: "center",
       }}
     >
-      <div style={{ width: 200, display: "flex", flexDirection: "column" }}>
-        <input
-          value={login}
-          onChange={(e) => setLogin(e.target.value)}
-          style={{ margin: 8 }}
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ margin: 8 }}
-        />
-        <button style={{ margin: 8 }} onClick={handleLoginClick}>
-          login
-        </button>
-      </div>
-    </div>
+      <form onSubmit={formik.handleSubmit}>
+        <div style={{ width: 200, display: "flex", flexDirection: "column" }}>
+          <TextField
+            required
+            label="Login"
+            name="login"
+            value={formik.values.login}
+            onChange={formik.handleChange}
+            sx={{ m: 1 }}
+            error={!!formik.errors.login}
+            helperText={formik.errors.login}
+          />
+          <TextField
+            required
+            label="Password"
+            type="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            sx={{ m: 1 }}
+            error={!!formik.errors.login}
+            helperText={formik.errors.password}
+          />
+          <Button variant="contained" type="submit" sx={{ m: 1 }}>
+            login
+          </Button>
+        </div>
+      </form>
+    </Box>
   );
 }
