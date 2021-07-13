@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { object, string } from "yup";
 import { TextField, Button, Box } from "@material-ui/core";
 
@@ -21,6 +21,7 @@ export default function App() {
     }),
   });
 
+  console.log(formik);
   return (
     <Box
       m={2}
@@ -39,9 +40,10 @@ export default function App() {
             name="login"
             value={formik.values.login}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             sx={{ m: 1 }}
-            error={!!formik.errors.login}
-            helperText={formik.errors.login}
+            error={formik.touched.login && !!formik.errors.login}
+            helperText={formik.touched.login && formik.errors.login}
           />
           <TextField
             required
@@ -50,9 +52,10 @@ export default function App() {
             name="password"
             value={formik.values.password}
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             sx={{ m: 1 }}
-            error={!!formik.errors.login}
-            helperText={formik.errors.password}
+            error={formik.touched.password && !!formik.errors.password}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <Button variant="contained" type="submit" sx={{ m: 1 }}>
             login
