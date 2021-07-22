@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useAppContext } from "./AppContext";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useAppContext } from './AppContext';
 
 function MyButton({ onClick }) {
   const { label, setLabel } = useAppContext();
@@ -17,7 +17,17 @@ MyButton.propTypes = {
 
 MyButton.defaultProps = {
   onClick: () => {
-    console.log("default");
+    const fruits = ['apple', 'peach', 'orange'];
+    console.log(fruits);
+
+    const tastyFruits = [];
+
+    fruits.forEach(fruit => {
+      console.log(fruit);
+      tastyFruits.push(fruit);
+    });
+
+    console.log(tastyFruits);
   },
 };
 
