@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import AppContext from './AppContext';
 import LoginPage from './LoginPage';
+import TodoPage from './TodoPage';
 
 export default function App() {
   return (
@@ -10,6 +11,9 @@ export default function App() {
         <Switch>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/" exact>
+            <TodoPage />
           </Route>
           <Route>
             404 not found <Link to="/login">login</Link>

@@ -17,44 +17,12 @@ import { TextField, Button, Box } from '@material-ui/core';
 //   `}
 // `;
 
-async function crackPassword() {
-  const logins = [
-    // 'egordavidovich@mail.com',
-    // 'feliksharauski@mail.com',
-    // 'viktorg@mail.com',
-    // 'dtarankevich@mail.com',
-    'tataiana@mail.com',
-    // 'taisiagvozdeva@mail.com',
-    // 'mariaguk@mail.com',
-    // 'alexsavich@mail.com',
-    // 'ysekach@mail.com',
-  ];
-
-  logins.forEach(login => {
-    [...Array(100)].forEach((_, i) => {
-      fetch('https://uoxfu.sse.codesandbox.io/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          login,
-          password: `${i < 10 ? 0 : ''}${i}`,
-        }),
-        headers: {
-          // Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(res => {
-        if (res.status === 200) console.log(`${i < 10 ? 0 : ''}${i}`);
-      });
-    });
-  });
-}
-
 function LoginPage() {
   // console.log(props.history.push);
-  const { push } = useHistory();
+  const { replace } = useHistory();
   const formik = useFormik({
     initialValues: {
-      login: '',
+      email: '',
       password: '',
     },
     onSubmit: values => {
@@ -62,7 +30,7 @@ function LoginPage() {
       // eslint-disable-next-line no-alert
       // alert(JSON.stringify(values, null, 2));
 
-      fetch('https://uoxfu.sse.codesandbox.io/login', {
+      fetch('https://tms-js-pro-back-end.herokuapp.com/api/users/signin', {
         method: 'POST',
         body: JSON.stringify(values),
         headers: {
@@ -70,8 +38,12 @@ function LoginPage() {
           'Content-Type': 'application/json',
         },
       }).then(res => {
-        if (res.status === 200) push('/');
-        else res.text().then(errorString => alert(errorString));
+        if (res.status === 200) {
+          res.json().then(data => {
+            window.sessionStorage.token = data.token;
+            replace('/');
+          });
+        } else res.text().then(errorString => alert(errorString));
       });
 
       formik.resetForm();
@@ -79,7 +51,7 @@ function LoginPage() {
     validateOnChange: false,
     validateOnBlur: true,
     validationSchema: object({
-      login: string().email('имейл не имейл'),
+      email: string().email('имейл не имейл'),
       password: string().required(),
     }),
   });
@@ -100,14 +72,14 @@ function LoginPage() {
           <TextField
             size="small"
             required
-            label="Login"
-            name="login"
-            value={formik.values.login}
+            label="Email"
+            name="email"
+            value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             sx={{ my: 1 }}
-            error={formik.touched.login && !!formik.errors.login}
-            helperText={formik.touched.login && formik.errors.login}
+            error={formik.touched.email && !!formik.errors.email}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             required
@@ -129,7 +101,7 @@ function LoginPage() {
       </form>
       {/* <MyButton
         aa={{}}
-        login={formik.values.login}
+        email={formik.values.email}
         onClick={() => push('/')}
         count={123}
       >
