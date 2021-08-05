@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import { object, string } from 'yup';
 // import styled, { css } from 'styled-components';
 import { TextField, Button, Box } from '@material-ui/core';
+import api, { setupApi } from '../../api';
 // import MyButton from './MyButton';
 // import './LoginPage.css';
 
@@ -30,21 +31,16 @@ function LoginPage() {
       // eslint-disable-next-line no-alert
       // alert(JSON.stringify(values, null, 2));
 
-      fetch('https://tms-js-pro-back-end.herokuapp.com/api/users/signin', {
-        method: 'POST',
-        body: JSON.stringify(values),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(res => {
-        if (res.status === 200) {
-          res.json().then(data => {
-            window.sessionStorage.token = data.token;
-            replace('/');
-          });
-        } else res.text().then(errorString => alert(errorString));
-      });
+      api
+        .post('/users/signin', values)
+        .then(({ data: { token } = {} }) => {
+          window.sessionStorage.token = token;
+          setupApi(token);
+          replace('/');
+        })
+        .catch(err => {
+          alert(err.message);
+        });
 
       formik.resetForm();
     },
