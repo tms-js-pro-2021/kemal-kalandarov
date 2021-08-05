@@ -108,19 +108,6 @@ export default function TodoPage() {
           </Alert>
         </Collapse>
       )}
-
-      {/* {isLoading && (
-        <Box
-          style={{
-            height: 'calc(100vh - 48px)',
-            width: '100vw',
-            display: 'grid',
-            placeItems: 'center',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )} */}
       <Container>
         <List>
           {isLoading
