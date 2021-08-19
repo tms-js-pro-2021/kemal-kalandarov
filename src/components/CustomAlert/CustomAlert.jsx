@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppContext } from '../../AppContext';
-import './CustomAlert.css';
+// import './CustomAlert.css';
 
 export default function CustomAlert() {
   const { alertText, closeAlert } = useAppContext();

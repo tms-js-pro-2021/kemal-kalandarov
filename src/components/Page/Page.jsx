@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppContext } from '../../AppContext';
 import CustomAlert from '../CustomAlert';
 import CustomAppBar from '../CustomAppBar';
-import './Page.css';
+// import './Page.css';
 
 export default function Page({
   prop1,

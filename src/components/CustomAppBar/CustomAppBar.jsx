@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import './CustomAppBar.css';
+// import './CustomAppBar.css';
 
 export default function CustomAppBar({ title }) {
   const { replace } = useHistory();

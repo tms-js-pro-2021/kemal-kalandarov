@@ -9,7 +9,11 @@ export default function TodoPage() {
   return (
     <TodoContext>
       <Page title="Todos">
-        <button type="button" onClick={() => setIsOpen(true)}>
+        <button
+          type="button"
+          data-testid="add-todo"
+          onClick={() => setIsOpen(true)}
+        >
           add todo
         </button>
         <TodoList />

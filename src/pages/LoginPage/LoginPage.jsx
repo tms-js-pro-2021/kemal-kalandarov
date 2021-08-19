@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { object, string } from 'yup';
 // import styled, { css } from 'styled-components';
-import { TextField, Button, Box } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  Box,
+  Checkbox,
+  FormControlLabel,
+} from '@material-ui/core';
 import api, { setupApi } from '../../api';
+// import { createRef } from 'react';
 // import MyButton from './MyButton';
 // import './LoginPage.css';
 
@@ -18,8 +25,17 @@ import api, { setupApi } from '../../api';
 //   `}
 // `;
 
+// function LoginPage2(props) {
+//   const passwordRef = useRef();
+
+//   return <input ref={passwordRef} />;
+// }
+
 function LoginPage() {
+  const passwordRef = useRef();
   // console.log(props.history.push);
+  const [isNewUser, setIsNewUser] = useState(false);
+
   const { replace } = useHistory();
   const formik = useFormik({
     initialValues: {
@@ -30,9 +46,9 @@ function LoginPage() {
       // return crackPassword();
       // eslint-disable-next-line no-alert
       // alert(JSON.stringify(values, null, 2));
-
+      const endpoint = isNewUser ? 'signup' : 'signin';
       api
-        .post('/users/signin', values)
+        .post(`/users/${endpoint}`, values)
         .then(({ data: { token } = {} }) => {
           window.sessionStorage.token = token;
           setupApi(token);
@@ -51,6 +67,14 @@ function LoginPage() {
       password: string().required(),
     }),
   });
+
+  useEffect(() => {
+    console.log(passwordRef.current);
+
+    return () => {
+      console.log('unmount');
+    };
+  }, []);
 
   return (
     <Box
@@ -84,14 +108,24 @@ function LoginPage() {
             type="password"
             name="password"
             sx={{ my: 1 }}
+            inputProps={{ ref: passwordRef }}
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.password && !!formik.errors.password}
             helperText={formik.touched.password && formik.errors.password}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isNewUser}
+                onChange={() => setIsNewUser(prev => !prev)}
+              />
+            }
+            label="New user"
+          />
           <Button variant="contained" type="submit" sx={{ my: 1 }}>
-            login
+            {isNewUser ? 'register' : 'login'}
           </Button>
         </div>
       </form>

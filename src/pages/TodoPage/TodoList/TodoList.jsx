@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTodoContext } from '../TodoContext';
 import TodoItem from '../TodoItem';
 
 export default function TodoList() {
-  const { todos, isLoading, loadTodos } = useTodoContext();
+  const { todos, isLoading } = useTodoContext();
 
-  useEffect(() => {
-    loadTodos();
-  }, []);
+  // useEffect(() => {
+  //   loadTodos();
+  // }, []);
 
   const isEmpty = todos.length === 0;
   // TODO: при ошибке рендерятся 10 туду айтемов без данных
