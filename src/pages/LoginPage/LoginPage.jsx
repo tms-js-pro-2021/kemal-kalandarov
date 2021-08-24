@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { object, string } from 'yup';
 // import styled, { css } from 'styled-components';
-import { TextField, Button, Box } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  Box,
+  Checkbox,
+  FormControlLabel,
+} from '@material-ui/core';
+import api, { setupApi } from '../../api';
+// import { createRef } from 'react';
 // import MyButton from './MyButton';
 // import './LoginPage.css';
 
@@ -17,72 +25,56 @@ import { TextField, Button, Box } from '@material-ui/core';
 //   `}
 // `;
 
-async function crackPassword() {
-  const logins = [
-    // 'egordavidovich@mail.com',
-    // 'feliksharauski@mail.com',
-    // 'viktorg@mail.com',
-    // 'dtarankevich@mail.com',
-    'tataiana@mail.com',
-    // 'taisiagvozdeva@mail.com',
-    // 'mariaguk@mail.com',
-    // 'alexsavich@mail.com',
-    // 'ysekach@mail.com',
-  ];
+// function LoginPage2(props) {
+//   const passwordRef = useRef();
 
-  logins.forEach(login => {
-    [...Array(100)].forEach((_, i) => {
-      fetch('https://uoxfu.sse.codesandbox.io/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          login,
-          password: `${i < 10 ? 0 : ''}${i}`,
-        }),
-        headers: {
-          // Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(res => {
-        if (res.status === 200) console.log(`${i < 10 ? 0 : ''}${i}`);
-      });
-    });
-  });
-}
+//   return <input ref={passwordRef} />;
+// }
 
 function LoginPage() {
+  const passwordRef = useRef();
   // console.log(props.history.push);
-  const { push } = useHistory();
+  const [isNewUser, setIsNewUser] = useState(false);
+
+  const { replace } = useHistory();
   const formik = useFormik({
     initialValues: {
-      login: '',
+      email: '',
       password: '',
     },
     onSubmit: values => {
       // return crackPassword();
       // eslint-disable-next-line no-alert
       // alert(JSON.stringify(values, null, 2));
-
-      fetch('https://uoxfu.sse.codesandbox.io/login', {
-        method: 'POST',
-        body: JSON.stringify(values),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(res => {
-        if (res.status === 200) push('/');
-        else res.text().then(errorString => alert(errorString));
-      });
+      const endpoint = isNewUser ? 'signup' : 'signin';
+      api
+        .post(`/users/${endpoint}`, values)
+        .then(({ data: { token } = {} }) => {
+          window.sessionStorage.token = token;
+          setupApi(token);
+          replace('/');
+        })
+        .catch(err => {
+          alert(err.message);
+        });
 
       formik.resetForm();
     },
     validateOnChange: false,
     validateOnBlur: true,
     validationSchema: object({
-      login: string().email('имейл не имейл'),
+      email: string().email('имейл не имейл'),
       password: string().required(),
     }),
   });
+
+  useEffect(() => {
+    console.log(passwordRef.current);
+
+    return () => {
+      console.log('unmount');
+    };
+  }, []);
 
   return (
     <Box
@@ -100,14 +92,14 @@ function LoginPage() {
           <TextField
             size="small"
             required
-            label="Login"
-            name="login"
-            value={formik.values.login}
+            label="Email"
+            name="email"
+            value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             sx={{ my: 1 }}
-            error={formik.touched.login && !!formik.errors.login}
-            helperText={formik.touched.login && formik.errors.login}
+            error={formik.touched.email && !!formik.errors.email}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             required
@@ -116,20 +108,30 @@ function LoginPage() {
             type="password"
             name="password"
             sx={{ my: 1 }}
+            inputProps={{ ref: passwordRef }}
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.password && !!formik.errors.password}
             helperText={formik.touched.password && formik.errors.password}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isNewUser}
+                onChange={() => setIsNewUser(prev => !prev)}
+              />
+            }
+            label="New user"
+          />
           <Button variant="contained" type="submit" sx={{ my: 1 }}>
-            login
+            {isNewUser ? 'register' : 'login'}
           </Button>
         </div>
       </form>
       {/* <MyButton
         aa={{}}
-        login={formik.values.login}
+        email={formik.values.email}
         onClick={() => push('/')}
         count={123}
       >
