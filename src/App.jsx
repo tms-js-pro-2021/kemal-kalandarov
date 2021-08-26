@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -7,6 +8,7 @@ import { setupApi } from './api';
 import AppContext from './AppContext';
 import LoginPage from './pages/LoginPage';
 import TodoPage from './pages/TodoPage';
+import { applicationSlice, store } from './redux';
 
 const queryClient = new QueryClient({
   // defaultOptions: {
@@ -17,13 +19,15 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { initialize } = applicationSlice.actions;
+
+  const isInitialized = useSelector(state => state.isInitialized);
 
   useEffect(() => {
     document.getElementById('loader').remove();
     const { token } = window.sessionStorage;
     if (token) setupApi(token);
-    setIsInitialized(true);
+    store.dispatch(initialize());
   }, []);
 
   if (!isInitialized) return null;

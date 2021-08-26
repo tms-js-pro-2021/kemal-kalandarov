@@ -1,33 +1,69 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../../../api';
 import ClickBoundary from '../../../components/ClickBoundary';
 import useErrorHandler from '../../../hooks/useErrorHandler';
+import { applicationSlice, store } from '../../../redux';
 import { useTodoContext } from '../TodoContext';
 import TodoDialog from '../TodoDialog';
 
-export default function TodoItem({ todo }) {
+type TodoItemProps = {
+  id: string;
+  count?: number;
+  children?: React.ReactNode;
+};
+
+export interface TodoItemType {
+  done: boolean;
+  description: string;
+}
+
+export const TodoItem2: React.FC<TodoItemProps> = ({ id, count }) => {
+  const [todos, setTodos] = useState<any[]>([]);
+
+  useEffect(() => {
+    setTodos([
+      ...todos,
+      { done: false, description: '123123' },
+      { description: 'dsvfs', done: true },
+    ]);
+  }, []);
+
+  return (
+    <>
+      {id}-{count}
+    </>
+  );
+};
+
+export default function TodoItem({ id }: TodoItemProps) {
   const { handleError } = useErrorHandler();
   const { isLoading, setTodos, loadTodos } = useTodoContext();
-
   const [isOpen, setIsOpen] = useState(false);
+
+  const todo = useSelector(state => state.todos.byId[id] || {});
 
   const handleToggle = () => {
     api
-      .put(`/todos/${todo.id}`, { done: !todo.done })
+      .put(`/todos/${id}`, { done: !todo.done })
       .catch(handleError)
       .finally(() => loadTodos(false));
 
-    setTodos(currentTodos =>
-      currentTodos.map(currentTodo => {
-        if (currentTodo.id === todo.id) {
-          return { ...currentTodo, done: !todo.done };
-        }
-        return currentTodo;
-      })
-    );
+    store.dispatch(applicationSlice.actions.setTodo({ id, done: !todo.done }));
+
+    // setTodos(currentTodos =>
+    //   currentTodos.map(currentTodo => {
+    //     if (currentTodo.id === todo.id) {
+    //       return { ...currentTodo, done: !todo.done };
+    //     }
+    //     return currentTodo;
+    //   })
+    // );
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event: React.MouseEvent) => {
     api
       .delete(`/todos/${todo.id}`)
       .catch(handleError)
@@ -69,7 +105,7 @@ export default function TodoItem({ todo }) {
         boxShadow: '3px 3px 2px 1px rgba(0, 0, 255, .2)',
       }}
     >
-      <input type="checkbox" edge="start" checked={todo.done} tabIndex={-1} />
+      <input type="checkbox" checked={todo.done} tabIndex={-1} />
       <h5>{todo.description}</h5>
       <ClickBoundary>
         <button type="button" onClick={() => setIsOpen(true)}>

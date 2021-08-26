@@ -6,6 +6,7 @@ module.exports = {
     path: path.join(__dirname, '/public'),
     filename: 'bundle.js',
   },
+  devtool: 'eval',
   // entry: './src/index.js',
   // webpack 5 comes with devServer which loads in development mode
   devServer: {
@@ -22,6 +23,13 @@ module.exports = {
         exclude: /nodeModules/,
         use: {
           loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /nodeModules/,
+        use: {
+          loader: 'ts-loader',
         },
       },
       {

@@ -8,16 +8,16 @@ const TodoContext = createContext();
 export const useTodoContext = () => useContext(TodoContext);
 
 export default ({ children }) => {
-  const { handleError } = useErrorHandler();
+  // const { handleError } = useErrorHandler();
 
-  const { isLoading, data: todos = [] } = useQuery(
-    'todos',
-    () => api.get('/todos').then(res => res.data),
-    { onError: handleError }
-  );
+  // const { isLoading, data: todos = [] } = useQuery(
+  //   'todos',
+  //   () => api.get('/todos').then(res => res.data),
+  //   { onError: handleError }
+  // );
 
   return (
-    <TodoContext.Provider value={{ todos, isLoading }}>
+    <TodoContext.Provider value={{ isLoading: false }}>
       {children}
     </TodoContext.Provider>
   );
